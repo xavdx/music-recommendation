@@ -10,7 +10,6 @@ const app = express();
 
 connectDB();
 
-// Allow both localhost (for development) and your Vercel URL (for production)
 app.use(cors({
     origin: ['http://localhost:3000', 'https://978music-recommendation.vercel.app']
 }));
