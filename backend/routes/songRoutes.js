@@ -45,7 +45,7 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
 });
 
 router.get('/recommend/:songTitle', async (req, res) => {
-    console.log('Requesting recommendations for:', req.params.songTitle);
+    console.log('Received request for song:', req.params.songTitle);
     try {
         const response = await axios.get(`http://localhost:5001/recommend?song=${encodeURIComponent(req.params.songTitle)}`);
         console.log('Flask response:', response.data);
