@@ -6,8 +6,10 @@ const Recommendations = () => {
     const [recommendations, setRecommendations] = useState([]);
 
     const fetchRecommendations = async () => {
+        console.log('Fetching recommendations for:', song);
         try {
             const res = await axios.get(`http://localhost:5000/api/songs/recommend/${encodeURIComponent(song)}`);
+            console.log('Response:', res.data);
             setRecommendations(res.data.recommendations || []);
         } catch (error) {
             console.error('Error fetching recommendations:', error);

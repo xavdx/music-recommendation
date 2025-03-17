@@ -5,6 +5,7 @@ const { S3Client } = require('@aws-sdk/client-s3'); // Use v3 S3 client
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const router = express.Router();
+const axios = require('axios');
 
 // Initialize S3Client with v3
 const s3Client = new S3Client({
@@ -44,10 +45,13 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
 });
 
 router.get('/recommend/:songTitle', async (req, res) => {
+    console.log('Requesting recommendations for:', req.params.songTitle);
     try {
         const response = await axios.get(`http://localhost:5001/recommend?song=${encodeURIComponent(req.params.songTitle)}`);
+        console.log('Flask response:', response.data);
         res.json(response.data);
     } catch (error) {
+        console.error('Error fetching from Flask:', error.message);
         res.status(500).json({ message: 'Error fetching recommendations', error: error.message });
     }
 });
