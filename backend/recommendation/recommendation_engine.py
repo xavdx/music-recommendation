@@ -1,7 +1,8 @@
 import pandas as pd
 import os
 
-dataset_path = "C:\\Anshav Desai\\SEM 6 Project\\music-recommendation\\dataset\\spotify_songs.csv"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+dataset_path = os.path.join(current_dir, "..", "dataset", "spotify_songs.csv")
 df = pd.read_csv(dataset_path)
 df.rename(columns={'track_name': 'title', 'track_genre': 'genre'}, inplace=True)
 print("Dataset loaded with", len(df), "songs")  # Confirm dataset load
