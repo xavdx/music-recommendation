@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from recommendation.recommendation_engine import recommend
+import os
 
 app = Flask(__name__)
 
@@ -12,4 +13,5 @@ def get_recommendations():
     return jsonify({'recommendations': recommendations})
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    port = int(os.environ.get('PORT', 5001))  # Use Render's PORT or default to 5001 locally
+    app.run(host='0.0.0.0', port=port)
