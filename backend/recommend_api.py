@@ -4,6 +4,11 @@ import os
 
 app = Flask(__name__)
 
+@app.route('/test', methods=['GET'])
+def test():
+    print("Test endpoint hit")
+    return jsonify({'message': 'Test route works'})
+
 @app.route('/', methods=['GET'])
 def root():
     print("Root endpoint hit")
