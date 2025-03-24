@@ -11,7 +11,7 @@ const app = express();
 connectDB();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://978music-recommendation.vercel.app']
+    origin: ['http://localhost:3000', 'https://music-recommendation-drab.vercel.app/']
 }));
 app.use(express.json());
 
