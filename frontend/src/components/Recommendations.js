@@ -8,7 +8,7 @@ const Recommendations = () => {
     const fetchRecommendations = async () => {
         console.log('Fetching recommendations for:', song);
         try {
-            const res = await axios.get(`http://localhost:5000/api/songs/recommend/${encodeURIComponent(song)}`);
+            const res = await axios.get(`https://music-recommendation-1-566r.onrender.com/recommend?song=${encodeURIComponent(song)}`);
             console.log('Response:', res.data);
             setRecommendations(res.data.recommendations || []);
         } catch (error) {
