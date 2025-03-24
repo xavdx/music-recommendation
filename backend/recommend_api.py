@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from recommendation.recommendation_engine import recommend
 import os
 
 app = Flask(__name__)
+CORS(app, resources={r"/recommend": {"origins": ["http://localhost:3000", "https://music-recommendation.vercel.app"]}})
 
 @app.route('/test', methods=['GET'])
 def test():
