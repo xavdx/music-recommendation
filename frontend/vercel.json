@@ -8,8 +8,5 @@
           "distDir": "build"
         }
       }
-    ],
-    "engines": {
-      "node": "20.x"
-    }
+    ]
   }
