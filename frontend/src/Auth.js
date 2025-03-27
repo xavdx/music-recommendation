@@ -1,22 +1,35 @@
-import React, { useState } from "react";
-import axios from "axios";
-
-const Auth = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async () => {
-    const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-  };
-
-  return (
-    <div>
-      <input type="email" onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
-    </div>
-  );
+import React, { useState } from 'react';
+import axios from 'axios';
+const Auth = ({ setToken }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLogin, setIsLogin] = useState(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const endpoint = isLogin ? 'login' : 'register';
+        try {
+            const res = await axios.post(`https://music-recommendation-1-566r.onrender.com/api/auth/${endpoint}`, { email, password });
+            if (isLogin) {
+                setToken(res.data.token);
+                localStorage.setItem('token', res.data.token);
+            }
+            alert(isLogin ? 'Logged in!' : 'Registered!');
+        } catch (error) {
+            alert(error.response.data.message);
+        }
+    };
+    return (
+        <div>
+            <h2>{isLogin ? 'Login' : 'Register'}</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+                <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+            </form>
+            <button onClick={() => setIsLogin(!isLogin)}>
+                Switch to {isLogin ? 'Register' : 'Login'}
+            </button>
+        </div>
+    );
 };
-
 export default Auth;
