@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+
 const Auth = ({ setToken }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,7 +16,7 @@ const Auth = ({ setToken }) => {
             }
             alert(isLogin ? 'Logged in!' : 'Registered!');
         } catch (error) {
-            alert(error.response.data.message);
+            alert(error.response?.data?.message || 'Error occurred');
         }
     };
     return (
