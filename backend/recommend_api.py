@@ -41,25 +41,25 @@ def get_recommendations():
 @app.route('/api/auth/register', methods=['POST', 'OPTIONS'])
 def register():
     if request.method == 'OPTIONS':
-        # Handle preflight request
+        #Handle preflight request
         response = jsonify({'message': 'Preflight OK'})
         response.headers['Access-Control-Allow-Origin'] = 'https://music-recommendation-drab.vercel.app'
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         return response, 200
 
-    # Handle POST request
+    #Handle POST request
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
 
-    # Check if user exists
+    #To check if user exists
     if users_collection.find_one({'email': email}):
         return jsonify({'error': 'User already exists'}), 409
 
-    # Hash password and save to MongoDB
+    #Hash password and save to MongoDB
     hashed_password = generate_password_hash(password)
     users_collection.insert_one({'email': email, 'password': hashed_password})
     return jsonify({'message': 'User registered successfully'}), 201
@@ -67,26 +67,24 @@ def register():
 @app.route('/api/auth/login', methods=['POST', 'OPTIONS'])
 def login():
     if request.method == 'OPTIONS':
-        #For handling the preflight request
         response = jsonify({'message': 'Preflight OK'})
         response.headers['Access-Control-Allow-Origin'] = 'https://music-recommendation-drab.vercel.app'
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         return response, 200
 
-    #For handling the POST request
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
 
-    #We have to find the user in MongoDB
     user = users_collection.find_one({'email': email})
     if user and check_password_hash(user['password'], password):
-        return jsonify({'message': 'Login successful'}), 200
+        # Generate a simple token
+        token = str(uuid.uuid4())
+        return jsonify({'message': 'Login successful', 'token': token}), 200
     return jsonify({'error': 'Invalid credentials'}), 401
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     app.run(host='0.0.0.0', port=port)
