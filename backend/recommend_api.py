@@ -4,6 +4,7 @@ from recommendation.recommendation_engine import recommend
 import os
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
 
 app = Flask(__name__)
 CORS(app, resources={
