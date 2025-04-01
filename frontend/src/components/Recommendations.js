@@ -9,7 +9,7 @@ const Recommendations = () => {
 
     const fetchRecommendations = async () => {
         try {
-            const res = await axios.get(`https://music-recommendation-1-566r.onrender.com/api/songs/recommend/${encodeURIComponent(song)}`, {
+            const res = await axios.get(`https://music-recommendation-1-566r.onrender.com/recommend?song=${encodeURIComponent(song)}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRecommendations(res.data.recommendations || []);
