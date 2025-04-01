@@ -30,15 +30,27 @@ def root():
     print("Root endpoint hit")
     return jsonify({'message': 'Welcome to the Music Recommendation API'})
 
-@app.route('/recommend', methods=['GET'])
+@app.route('/recommend', methods=['GET', 'OPTIONS'])
 def get_recommendations():
-    print("Recommend endpoint hit")
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight OK'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://music-recommendation-drab.vercel.app'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+        return response, 200
+
+    # Optional: Verify token (currently just a UUID, no session store)
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    if not token:
+        logging.debug("No token provided")
+        return jsonify({'error': 'Authorization token required'}), 401
+    # For now, accept any token (improve later with session validation)
     song_title = request.args.get('song')
-    print(f"Received request for song: {song_title}")
+    logging.debug(f"Recommend - Song: {song_title}, Token: {token}")
     if not song_title:
         return jsonify({'error': 'Song title is required'}), 400
     recommendations = recommend(song_title)
-    print(f"Returning: {recommendations}")
+    logging.debug(f"Recommendations: {recommendations}")
     return jsonify({'recommendations': recommendations})
 
 @app.route('/api/auth/register', methods=['POST', 'OPTIONS'])
