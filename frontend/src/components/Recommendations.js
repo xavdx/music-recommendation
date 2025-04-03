@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Auth from './Auth';
 
@@ -13,13 +13,13 @@ const Recommendations = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRecommendations(res.data.recommendations || []);
-            fetchHistory(); //to refresh history after a search
+            fetchHistory(); // Refresh history after search
         } catch (error) {
             console.error('Error fetching recommendations:', error);
             setRecommendations([]);
         }
     };
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         try {
             const res = await axios.get('https://music-recommendation-1-566r.onrender.com/api/history', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -29,7 +29,7 @@ const Recommendations = () => {
             console.error('Error fetching history:', error);
             setHistory([]);
         }
-    };
+    }, [token]); // Dependencies for fetchHistory
     const addToCollection = async (song) => {
         try {
             await axios.post('https://music-recommendation-1-566r.onrender.com/api/collection/add', { song }, {
@@ -49,8 +49,8 @@ const Recommendations = () => {
         };
     };
     useEffect(() => {
-        if (token) fetchHistory(); //To load history
-    }, [token, fetchHistory]);
+        if (token) fetchHistory(); // Load history on mount
+    }, [token, fetchHistory]); // fetchHistory is now stable
     if (!token) return <Auth setToken={setToken} />;
     return (
         <div className="w-full max-w-2xl bg-card p-6 rounded-lg shadow-md">
