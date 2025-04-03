@@ -13,8 +13,8 @@ function App() {
 
     return (
         <Router>
-            <div className="App min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold text-indigo-600 mb-6 animate-bounce">
+            <div className="App min-h-screen bg-primary flex flex-col items-center justify-center">
+                <h1 className="text-4xl font-bold text-primary mb-6">
                     Music Recommendation Engine
                 </h1>
                 <Routes>
