@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 const Auth = ({ setToken }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const endpoint = isLogin ? 'login' : 'register';
         try {
-            const res = await axios.post(`https://music-recommendation-1-566r.onrender.com/api/auth/${endpoint}`,{ email, password });
+            const res = await axios.post(
+                `https://music-recommendation-1-566r.onrender.com/api/auth/${endpoint}`,
+                { email: email.trim(), password: password.trim() }
+            );
             if (isLogin) {
                 setToken(res.data.token);
                 localStorage.setItem('token', res.data.token);
@@ -24,25 +27,38 @@ const Auth = ({ setToken }) => {
             alert(error.response?.data?.error || 'Error occurred');
         }
     };
+
     return (
-        <div>
-            <h2>{isLogin ? 'Login' : 'Register'}</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                {isLogin ? 'Login' : 'Register'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-                <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+                <button
+                    type="submit"
+                    className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"
+                >
+                    {isLogin ? 'Login' : 'Register'}
+                </button>
             </form>
-            <button onClick={() => setIsLogin(!isLogin)}>
+            <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="mt-4 text-indigo-600 hover:underline"
+            >
                 Switch to {isLogin ? 'Register' : 'Login'}
             </button>
         </div>

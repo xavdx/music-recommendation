@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Auth from './components/Auth';
 import Recommendations from './components/Recommendations';
+
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token') || null);
-    // Clear token on logout
+
     const handleLogout = () => {
         setToken(null);
         localStorage.removeItem('token');
     };
+
     return (
         <Router>
-            <div className="App">
-                <h1>Music Recommendation Engine</h1>
+            <div className="App min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+                <h1 className="text-4xl font-bold text-indigo-600 mb-6 animate-bounce">
+                    Music Recommendation Engine
+                </h1>
                 <Routes>
                     <Route
                         path="/auth"
@@ -24,9 +28,17 @@ function App() {
                     />
                     <Route path="/" element={<Navigate to="/auth" />} />
                 </Routes>
-                {token && <button onClick={handleLogout}>Logout</button>}
+                {token && (
+                    <button
+                        onClick={handleLogout}
+                        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+                    >
+                        Logout
+                    </button>
+                )}
             </div>
         </Router>
     );
 }
+
 export default App;
