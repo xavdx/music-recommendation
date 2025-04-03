@@ -14,7 +14,7 @@ function App() {
     return (
         <Router>
             <div className="App min-h-screen bg-primary flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold text-primary mb-6">
+                <h1 className="text-4xl font-bold text-card mb-6">
                     Music Recommendation Engine
                 </h1>
                 <Routes>
