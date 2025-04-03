@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Auth from './Auth';
 
 const Recommendations = () => {
     const [song, setSong] = useState('');
     const [recommendations, setRecommendations] = useState([]);
+    const [history, setHistory] = useState([]);
     const [token, setToken] = useState(localStorage.getItem('token') || '');
     const fetchRecommendations = async () => {
         try {
@@ -12,9 +13,32 @@ const Recommendations = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRecommendations(res.data.recommendations || []);
+            fetchHistory(); // Refresh history after search
         } catch (error) {
             console.error('Error fetching recommendations:', error);
             setRecommendations([]);
+        }
+    };
+    const fetchHistory = async () => {
+        try {
+            const res = await axios.get('https://music-recommendation-1-566r.onrender.com/api/history', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setHistory(res.data.history || []);
+        } catch (error) {
+            console.error('Error fetching history:', error);
+            setHistory([]);
+        }
+    };
+    const addToCollection = async (song) => {
+        try {
+            await axios.post('https://music-recommendation-1-566r.onrender.com/api/collection/add', { song }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert('Added to collection!');
+        } catch (error) {
+            console.error('Error adding to collection:', error);
+            alert('Failed to add to collection');
         }
     };
     const getStreamingLinks = (title, artists) => {
@@ -24,6 +48,9 @@ const Recommendations = () => {
             spotify: `https://open.spotify.com/search/${query}`
         };
     };
+    useEffect(() => {
+        if (token) fetchHistory(); //To load history
+    }, [token]);
     if (!token) return <Auth setToken={setToken} />;
     return (
         <div className="w-full max-w-2xl bg-card p-6 rounded-lg shadow-md">
@@ -41,6 +68,20 @@ const Recommendations = () => {
                     Get Recommendations
                 </button>
             </div>
+            {/* Search History */}
+            {history.length > 0 && (
+                <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-primary mb-2">Search History</h3>
+                    <ul className="space-y-2">
+                        {history.map((item, index) => (
+                            <li key={index} className="text-gray-700">
+                                {item.song} <span className="text-gray-500 text-sm">({new Date(item.timestamp).toLocaleString()})</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+            {/* Recommendations */}
             {recommendations.length > 0 ? (
                 <ul className="space-y-4">
                     {recommendations.map((rec, index) => {
@@ -70,6 +111,12 @@ const Recommendations = () => {
                                     >
                                         Spotify
                                     </a>
+                                    <button
+                                        onClick={() => addToCollection({ title: rec.title, artists: rec.artists })}
+                                        className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+                                    >
+                                        Add to Collection
+                                    </button>
                                 </div>
                             </li>
                         );
