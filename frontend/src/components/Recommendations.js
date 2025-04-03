@@ -13,7 +13,7 @@ const Recommendations = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRecommendations(res.data.recommendations || []);
-            fetchHistory(); // Refresh history after search
+            fetchHistory(); //to refresh history after a search
         } catch (error) {
             console.error('Error fetching recommendations:', error);
             setRecommendations([]);
@@ -50,7 +50,7 @@ const Recommendations = () => {
     };
     useEffect(() => {
         if (token) fetchHistory(); //To load history
-    }, [token]);
+    }, [token, fetchHistory]);
     if (!token) return <Auth setToken={setToken} />;
     return (
         <div className="w-full max-w-2xl bg-card p-6 rounded-lg shadow-md">
