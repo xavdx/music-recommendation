@@ -18,7 +18,7 @@ def recommend(song_title):
     print("Genre:", song_genre)
     
     # Filter songs by genre, excluding the input song
-    recommendations = df[(df['genre'] == song_genre) & (df['title'] != song_title)][['title', 'artists']]
+    recommendations = df[(df['genre'] == song_genre) & (df['title'] != song_title)][['title', 'artists']].drop_duplicates()
     print("Found", len(recommendations), "recommendations")
     
     # Randomly sample 5 songs (or fewer if less than 5 available)
