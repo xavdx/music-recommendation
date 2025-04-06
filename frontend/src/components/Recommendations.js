@@ -55,16 +55,8 @@ const Recommendations = () => {
     return (
         <div className="w-full max-w-2xl bg-card p-6 rounded-lg shadow-md">
             <div className="flex space-x-4 mb-6">
-                <input
-                    value={song}
-                    onChange={(e) => setSong(e.target.value)}
-                    placeholder="Enter song name"
-                    className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <button
-                    onClick={fetchRecommendations}
-                    className="px-6 py-2 bg-primary text-white rounded-md hover:bg-indigo-700 transition duration-300"
-                >
+                <input value={song} onChange={(e) => setSong(e.target.value)} placeholder="Enter song name" className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+                <button onClick={fetchRecommendations} className="px-6 py-2 bg-primary text-white rounded-md hover:bg-hoverpurp transition duration-300">
                     Get Recommendations
                 </button>
             </div>
