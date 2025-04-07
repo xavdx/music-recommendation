@@ -6,12 +6,7 @@ const Admin = () => {
     const [data, setData] = useState({ users: [], collections: [], history: [] });
     const [token, setToken] = useState(localStorage.getItem('token') || '');
     const isAdmin = localStorage.getItem('is_admin') === 'true';
-    useEffect(() => {
-        if (token && isAdmin) {
-            fetchAdminData();
-        }
-    }, [token, isAdmin]);
-    const fetchAdminData = async () => {
+    const fetchAdminData = useCallback(async () => {
         try {
             const res = await axios.get('https://music-recommendation-1-566r.onrender.com/api/admin/users', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -20,7 +15,13 @@ const Admin = () => {
         } catch (error) {
             console.error('Error fetching admin data:', error);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        if (token && isAdmin) {
+            fetchAdminData();
+        }
+    }, [token, isAdmin, fetchAdminData]);
     if (!token || !isAdmin) return <Auth setToken={setToken} />;
     return (
         <div className="w-full max-w-4xl bg-hoverpurp p-6 rounded-lg shadow-md">
