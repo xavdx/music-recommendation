@@ -9,6 +9,7 @@ const Auth = ({ setToken }) => {
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         const endpoint = isLogin ? 'login' : 'register';
         try {
             const res = await axios.post(
@@ -18,13 +19,14 @@ const Auth = ({ setToken }) => {
             if (isLogin) {
                 setToken(res.data.token);
                 localStorage.setItem('token', res.data.token);
-                navigate('/recommendations');
+                localStorage.setItem('is_admin', res.data.is_admin);
+                navigate(res.data.is_admin ? '/admin' : '/recommendations');
             } else {
                 alert('Registered! Please log in.');
                 setIsLogin(true);
             }
         } catch (error) {
-            alert(error.response?.data?.error || 'Error occurred');
+            setError(error.response?.data?.error || 'Error occurred');
         }
     };
 
@@ -33,6 +35,7 @@ const Auth = ({ setToken }) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
                 {isLogin ? 'Login' : 'Register'}
             </h2>
+            {error && <p className="text-danger mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     type="email"

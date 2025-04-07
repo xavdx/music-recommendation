@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Auth from './components/Auth';
 import Recommendations from './components/Recommendations';
+import Admin from './components/Admin';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token') || null);
-
     const handleLogout = () => {
         setToken(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('is_admin');
     };
-
     return (
         <Router>
             <div className="App min-h-screen bg-primary flex flex-col items-center justify-center">
@@ -27,6 +27,7 @@ function App() {
                         element={token ? <Recommendations /> : <Navigate to="/auth" />}
                     />
                     <Route path="/" element={<Navigate to="/auth" />} />
+                    <Route path="/admin" element={token && localStorage.getItem('is_admin') === 'true' ? <Admin /> : <Navigate to="/auth" />} />
                 </Routes>
                 {token && (
                     <button
@@ -40,5 +41,4 @@ function App() {
         </Router>
     );
 }
-
 export default App;

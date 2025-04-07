@@ -7,8 +7,8 @@ const connectDB = () => {
     .then(() => console.log('MongoDB connected'))
     .catch(err => {
         console.error('MongoDB connection error:', err);
-        process.exit(1); // Exit if connection fails
+        process.exit(1); //Exit whenever connection fails
     });
-    return mongoose; // Return mongoose instance
+    return mongoose; //Return the mongoose instance
 };
 module.exports=connectDB;

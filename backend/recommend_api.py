@@ -7,13 +7,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import logging
 import datetime
+import re
 
 app = Flask(__name__)
 CORS(app, resources={
     r"/recommend": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]},
     r"/api/auth/*": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]},
     r"/api/collection/*": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]},
-    r"/api/history/*": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]}
+    r"/api/history/*": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]},
+    r"/api/admin/*": {"origins": ["http://localhost:3000", "https://music-recommendation-drab.vercel.app"]}
 })
 logging.basicConfig(level=logging.DEBUG)
 mongo_uri = "mongodb+srv://anshavdesai:anshav51@musiccluster.fzaq8.mongodb.net/?retryWrites=true&w=majority&appName=MusicCluster"
@@ -22,6 +24,10 @@ db = client['musicdb']
 users_collection = db['users']
 collections_collection = db['collections']
 history_collection = db['history']
+
+def is_valid_email(email):
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(email_pattern, email) is not None
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -78,7 +84,11 @@ def register():
     password = data.get('password')
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
-
+    if not is_valid_email(email):
+        return jsonify({'error': 'Invalid email format'}), 400
+    if len(password) < 8:
+        return jsonify({'error': 'Password must be at least 8 characters long'}), 400
+    
     if users_collection.find_one({'email': email}):
         return jsonify({'error': 'User already exists'}), 409
 
@@ -101,6 +111,10 @@ def login():
     password = data.get('password', '').strip()
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
+    if not is_valid_email(email):
+        return jsonify({'error': 'Invalid email format'}), 400
+    if len(password) < 8:
+        return jsonify({'error': 'Password must be at least 8 characters long'}), 400
 
     user = users_collection.find_one({'email': email})
     if user and check_password_hash(user['password'], password):
@@ -157,6 +171,28 @@ def get_search_history():
 
     history = list(history_collection.find({'email': email}).sort('timestamp', -1).limit(10))  # Last 10 searches
     return jsonify({'history': [{'song': h['song'], 'timestamp': h['timestamp'].isoformat()} for h in history]})
+
+@app.route('/api/admin/users', methods=['GET', 'OPTIONS'])
+def get_all_users():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight OK'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://music-recommendation-drab.vercel.app'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+        return response, 200
+
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    if not token:
+        return jsonify({'error': 'Authorization token required'}), 401
+
+    user = users_collection.find_one({'token': token})
+    if not user or not user.get('is_admin', False):
+        return jsonify({'error': 'Admin access required'}), 403
+
+    users = list(users_collection.find({}, {'_id': 0, 'password': 0}))  # Exclude passwords
+    collections = list(collections_collection.find({}, {'_id': 0}))
+    history = list(history_collection.find({}, {'_id': 0}))
+    return jsonify({'users': users, 'collections': collections, 'history': history})
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     app.run(host='0.0.0.0', port=port)
