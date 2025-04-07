@@ -193,6 +193,7 @@ def get_all_users():
     collections = list(collections_collection.find({}, {'_id': 0}))
     history = list(history_collection.find({}, {'_id': 0}))
     return jsonify({'users': users, 'collections': collections, 'history': history})
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     app.run(host='0.0.0.0', port=port)
