@@ -6,6 +6,7 @@ const Auth = ({ setToken }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLogin, setIsLogin] = useState(true);
+    const [isAdminLogin, setIsAdminLogin] = useState(false); // New state for admin login
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
@@ -21,7 +22,7 @@ const Auth = ({ setToken }) => {
                 setToken(res.data.token);
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('is_admin', res.data.is_admin);
-                navigate(res.data.is_admin ? '/admin' : '/recommendations');
+                navigate(res.data.is_admin && isAdminLogin ? '/admin' : '/recommendations');
             } else {
                 alert('Registered! Please log in.');
                 setIsLogin(true);
@@ -30,11 +31,10 @@ const Auth = ({ setToken }) => {
             setError(error.response?.data?.error || 'Error occurred');
         }
     };
-
     return (
-        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                {isLogin ? 'Login' : 'Register'}
+        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105">
+            <h2 className="text-2xl font-semibold text-primary mb-6">
+                {isLogin ? (isAdminLogin ? 'Admin Login' : 'Login') : 'Register'}
             </h2>
             {error && <p className="text-danger mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -43,28 +43,38 @@ const Auth = ({ setToken }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"
+                    className="w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-indigo-700 transition duration-300"
                 >
-                    {isLogin ? 'Login' : 'Register'}
+                    {isLogin ? (isAdminLogin ? 'Admin Login' : 'Login') : 'Register'}
                 </button>
             </form>
-            <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="mt-4 text-indigo-600 hover:underline"
-            >
-                Switch to {isLogin ? 'Register' : 'Login'}
-            </button>
+            <div className="mt-4 flex justify-between">
+                <button
+                    onClick={() => { setIsLogin(!isLogin); setIsAdminLogin(false); }}
+                    className="text-primary hover:underline"
+                >
+                    Switch to {isLogin ? 'Register' : 'Login'}
+                </button>
+                {isLogin && (
+                    <button
+                        onClick={() => setIsAdminLogin(!isAdminLogin)}
+                        className="text-primary hover:underline text-sm"
+                    >
+                        {isAdminLogin ? 'User Login' : 'Admin Login'}
+                    </button>
+                )}
+            </div>
         </div>
     );
 };
