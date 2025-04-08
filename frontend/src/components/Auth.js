@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,17 +8,7 @@ const Auth = ({ setToken }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isAdminLogin, setIsAdminLogin] = useState(false); // New state for admin login
     const [error, setError] = useState('');
-    const [showVideo, setShowVideo] = useState(true); // State to control video visibility
     const navigate = useNavigate();
-    useEffect(() => {
-        // Hide video after 5 seconds or when it ends
-        const timer = setTimeout(() => setShowVideo(false), 5000);
-        return () => clearTimeout(timer); // Cleanup timer on unmount
-    }, []);
-
-    const handleVideoEnd = () => {
-        setShowVideo(false); // Hide video when it finishes
-    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -28,12 +18,12 @@ const Auth = ({ setToken }) => {
                 `https://music-recommendation-1-566r.onrender.com/api/auth/${endpoint}`,
                 { email: email.trim(), password: password.trim() }
             );
-            console.log('Login/Register Response:', res.data);
+            console.log('Login/Register Response:', res.data); // Add this
             if (isLogin) {
                 setToken(res.data.token);
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('is_admin', res.data.is_admin !== undefined ? res.data.is_admin : false);
-                navigate((res.data.is_admin && isAdminLogin) ? '/admin' : '/recommendations');
+                localStorage.setItem('is_admin', res.data.is_admin);
+                navigate(res.data.is_admin && isAdminLogin ? '/admin' : '/recommendations');
             } else {
                 alert('Registered! Please log in.');
                 setIsLogin(true);
@@ -43,16 +33,7 @@ const Auth = ({ setToken }) => {
         }
     };
     return (
-        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105 flex flex-col items-center">
-            {showVideo && (
-                <video
-                    src="/video1.mp4"
-                    autoPlay
-                    muted //Mute to avoid autoplay restrictions
-                    onEnded={handleVideoEnd}
-                    className="w-1/2 mb-6"//Adjust width as needed
-                />
-            )}
+        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105">
             <h2 className="text-2xl font-semibold text-primary mb-6">
                 {isLogin ? (isAdminLogin ? 'Admin Login' : 'Login') : 'Register'}
             </h2>
