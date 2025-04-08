@@ -8,7 +8,17 @@ const Auth = ({ setToken }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isAdminLogin, setIsAdminLogin] = useState(false); // New state for admin login
     const [error, setError] = useState('');
+    const [showVideo, setShowVideo] = useState(true); // State to control video visibility
     const navigate = useNavigate();
+    useEffect(() => {
+        // Hide video after 5 seconds or when it ends
+        const timer = setTimeout(() => setShowVideo(false), 5000);
+        return () => clearTimeout(timer); // Cleanup timer on unmount
+    }, []);
+
+    const handleVideoEnd = () => {
+        setShowVideo(false); // Hide video when it finishes
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -33,7 +43,16 @@ const Auth = ({ setToken }) => {
         }
     };
     return (
-        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105">
+        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105 flex flex-col items-center">
+            {showVideo && (
+                <video
+                    src="/logo-video.mp4"
+                    autoPlay
+                    muted //Mute to avoid autoplay restrictions
+                    onEnded={handleVideoEnd}
+                    className="w-1/2 mb-6"//Adjust width as needed
+                />
+            )}
             <h2 className="text-2xl font-semibold text-primary mb-6">
                 {isLogin ? (isAdminLogin ? 'Admin Login' : 'Login') : 'Register'}
             </h2>
