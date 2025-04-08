@@ -14,6 +14,11 @@ function App() {
     return (
         <Router>
             <div className="App min-h-screen bg-primary flex flex-col items-center justify-center">
+                <img 
+                    src="/logo4.png" 
+                    alt="Music Recommendation Logo" 
+                    className="w-24 h-24 mb-4" //size
+                />
                 <h1 className="text-4xl font-bold text-card mb-6">
                     Music Recommendation Engine
                 </h1>
