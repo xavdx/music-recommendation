@@ -18,11 +18,12 @@ const Auth = ({ setToken }) => {
                 `https://music-recommendation-1-566r.onrender.com/api/auth/${endpoint}`,
                 { email: email.trim(), password: password.trim() }
             );
+            console.log('Login/Register Response:', res.data);
             if (isLogin) {
                 setToken(res.data.token);
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('is_admin', res.data.is_admin);
-                navigate(res.data.is_admin && isAdminLogin ? '/admin' : '/recommendations');
+                localStorage.setItem('is_admin', res.data.is_admin !== undefined ? res.data.is_admin : false);
+                navigate((res.data.is_admin && isAdminLogin) ? '/admin' : '/recommendations');
             } else {
                 alert('Registered! Please log in.');
                 setIsLogin(true);

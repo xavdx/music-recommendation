@@ -109,6 +109,7 @@ def login():
     data = request.get_json()
     email = data.get('email', '').strip().lower()
     password = data.get('password', '').strip()
+
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
     if not is_valid_email(email):
@@ -120,7 +121,7 @@ def login():
     if user and check_password_hash(user['password'], password):
         token = str(uuid.uuid4())
         users_collection.update_one({'email': email}, {'$set': {'token': token}})
-        return jsonify({'message': 'Login successful', 'token': token}), 200
+        return jsonify({'message': 'Login successful', 'token': token, 'is_admin': user.get('is_admin', False)}), 200
     return jsonify({'error': 'Invalid credentials'}), 401
 
 @app.route('/api/collection/add', methods=['POST', 'OPTIONS'])
