@@ -46,7 +46,7 @@ const Auth = ({ setToken }) => {
         <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105 flex flex-col items-center">
             {showVideo && (
                 <video
-                    src="/logo-video.mp4"
+                    src="/video1.mp4"
                     autoPlay
                     muted //Mute to avoid autoplay restrictions
                     onEnded={handleVideoEnd}
