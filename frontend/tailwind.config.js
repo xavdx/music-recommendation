@@ -7,7 +7,7 @@ module.exports = {
         // Override or add custom colors
         primary: '#512888',    // Purple
         secondary: '#f97316',  // Orange
-        background: '#8D029B', // Light gray
+        background: '#8D029B', // plum
         card: '#ffffff',       // White
         danger: '#ED2839',     // Red
         hoverpurp:"#c18eff",    // Light purple

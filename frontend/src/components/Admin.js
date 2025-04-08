@@ -24,7 +24,7 @@ const Admin = () => {
     }, [token, isAdmin, fetchAdminData]);
     if (!token || !isAdmin) return <Auth setToken={setToken} />;
     return (
-        <div className="w-full max-w-4xl bg-background p-6 rounded-lg shadow-md">
+        <div className="w-full max-w-4xl bg-card p-6 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-primary mb-6">Admin Dashboard</h2>
             
             <h3 className="text-lg font-medium text-gray-800 mb-4">Users</h3>
