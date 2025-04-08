@@ -17,7 +17,7 @@ function App() {
                 <img 
                     src="/logo4.png" 
                     alt="Music Recommendation Logo" 
-                    className="w-25 h-25 mb-5" //size
+                    className="w-20 h-20 mb-4" //size
                 />
                 <h1 className="text-4xl font-bold text-card mb-6">
                     Music Recommendation Engine
