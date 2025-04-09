@@ -67,7 +67,7 @@ def get_recommendations():
 
     recommendations = recommend(song_title)
     return jsonify({'recommendations': recommendations})
-    # logging.debug(f"Recommendations: {recommendations}")
+    #logging.debug(f"Recommendations: {recommendations}")
     return jsonify({'recommendations': recommendations})
 
 @app.route('/api/auth/register', methods=['POST', 'OPTIONS'])
@@ -170,7 +170,7 @@ def get_search_history():
     if not email:
         return jsonify({'error': 'Invalid token'}), 401
 
-    history = list(history_collection.find({'email': email}).sort('timestamp', -1).limit(10))  # Last 10 searches
+    history = list(history_collection.find({'email': email}).sort('timestamp', -1).limit(10))  #Previous 10 searches
     return jsonify({'history': [{'song': h['song'], 'timestamp': h['timestamp'].isoformat()} for h in history]})
 
 @app.route('/api/admin/users', methods=['GET', 'OPTIONS'])
@@ -190,7 +190,7 @@ def get_all_users():
     if not user or not user.get('is_admin', False):
         return jsonify({'error': 'Admin access required'}), 403
 
-    users = list(users_collection.find({}, {'_id': 0, 'password': 0}))  # Exclude passwords
+    users = list(users_collection.find({}, {'_id': 0, 'password': 0}))  #Excluding passwords
     collections = list(collections_collection.find({}, {'_id': 0}))
     history = list(history_collection.find({}, {'_id': 0}))
     return jsonify({'users': users, 'collections': collections, 'history': history})

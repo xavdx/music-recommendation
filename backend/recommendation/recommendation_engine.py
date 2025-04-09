@@ -6,7 +6,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 dataset_path = os.path.join(current_dir, "..", "dataset", "spotify_songs.csv")
 df = pd.read_csv(dataset_path)
 df.rename(columns={'track_name': 'title', 'track_genre': 'genre'}, inplace=True)
-print("Dataset loaded with", len(df), "songs")  # Confirm dataset load
+print("Dataset loaded with", len(df), "songs")  #Confirm that the dataset has loaded
 
 def recommend(song_title):
     print("Searching for:", song_title)
@@ -17,11 +17,11 @@ def recommend(song_title):
     song_genre = df[df['title'] == song_title]['genre'].values[0]
     print("Genre:", song_genre)
     
-    # Filter songs by genre, excluding the input song
+    #Filter songs by genre without inluding the input song
     recommendations = df[(df['genre'] == song_genre) & (df['title'] != song_title)][['title', 'artists']].drop_duplicates()
     print("Found", len(recommendations), "recommendations")
     
-    # Randomly sample 5 songs (or fewer if less than 5 available)
+    #Randomly selecting any 5 songs
     if len(recommendations) > 5:
         recommendations = recommendations.sample(n=5, random_state=random.randint(1, 10000))
     else:
